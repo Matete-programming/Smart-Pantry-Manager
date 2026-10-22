@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         ingredientFormLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -75,19 +74,17 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        btnRecipes.setOnClickListener(v ->
-                Toast.makeText(
-                        this,
-                        "Recipe suggestions coming soon.",
-                        Toast.LENGTH_SHORT
-                ).show());
+        btnRecipes.setOnClickListener(v ->{
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    SuggestedRecipesActivity.class);
+            startActivity(intent);
+        });
 
-        btnSettings.setOnClickListener(v ->
-                Toast.makeText(
-                        this,
-                        "Settings screen coming soon.",
-                        Toast.LENGTH_SHORT
-                ).show());
+        btnSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
 
         loadPantryItems();
     }
