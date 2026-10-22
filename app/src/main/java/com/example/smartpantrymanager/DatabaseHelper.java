@@ -187,5 +187,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)}
         );
     }
+
+    public Cursor getPantryItemById(int id) {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        return db.query(
+                TABLE_PANTRY,
+                null,
+                COL_ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null
+        );
+    }
+
 }
 

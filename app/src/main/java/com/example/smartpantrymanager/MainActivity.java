@@ -15,6 +15,13 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import android.content.Intent;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+
+
 public class MainActivity extends AppCompatActivity
         implements PantryAdapter.OnIngredientActionListener {
 
@@ -25,11 +32,23 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerPantry;
     private TextView txtPantryCount;
     private TextView txtEmptyPantry;
+    private ActivityResultLauncher<Intent> ingredientFormLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        ingredientFormLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        loadPantryItems();
+                    }
+                }
+        );
+
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -47,12 +66,14 @@ public class MainActivity extends AppCompatActivity
         Button btnRecipes = findViewById(R.id.btnSuggestedRecipes);
         Button btnSettings = findViewById(R.id.btnSettings);
 
-        btnAdd.setOnClickListener(v ->
-                Toast.makeText(
-                        this,
-                        "Ingredient form coming in the next step.",
-                        Toast.LENGTH_SHORT
-                ).show());
+        btnAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    AddEditIngredientActivity.class);
+
+            ingredientFormLauncher.launch(intent);
+        });
+
 
         btnRecipes.setOnClickListener(v ->
                 Toast.makeText(
@@ -124,15 +145,21 @@ public class MainActivity extends AppCompatActivity
                         : RecyclerView.VISIBLE);
     }
 
+
     @Override
     public void onEdit(PantryItem item) {
 
-        Toast.makeText(
-                this,
-                "Editing will be enabled in the next step.",
-                Toast.LENGTH_SHORT
-        ).show();
+        Intent intent = new Intent(
+                MainActivity.this,
+                AddEditIngredientActivity.class);
+
+        intent.putExtra(
+                AddEditIngredientActivity.EXTRA_ITEM_ID,
+                item.getId());
+
+        ingredientFormLauncher.launch(intent);
     }
+
 
     @Override
     public void onDelete(PantryItem item) {
